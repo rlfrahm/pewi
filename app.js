@@ -25,6 +25,13 @@ angular.module('pewi', [])
     "Background_Normal.png",
     "Background_Flood.png"])
 
+.value('pewiData', {
+  1: null,
+  2: null,
+  3: null,
+  precipitation: null
+})
+
 .controller('MainCtrl', ['$scope','$http','$location', 'selectedLandcover', 'precipitation', 'backgrounds',
   function($scope, $http, $location, selectedLandcover, precipitation, backgrounds) {
     $http.get($location.absUrl() + 'data/data.json').success(
@@ -120,12 +127,8 @@ angular.module('pewi', [])
   function(backgrounds, precipitation) {
     return {
       link: function(scope,element,attrs) {
-        var alias = attrs.alias;
-        console.log(attrs, scope);
-
         element.css({
           'background-image': 'url(images/backgrounds/'+backgrounds[precipitation.getSeed(scope.year)]+')'
-
         });
       }
     }
