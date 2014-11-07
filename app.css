@@ -45,3 +45,9 @@ h1 {
 .watershed-rect {
     position: absolute;
 }
+.watershed-rect:hover {
+    cursor: pointer;
+    -moz-box-shadow:    inset 0 0 10px #000000;
+    -webkit-box-shadow: inset 0 0 10px #000000;
+    box-shadow:         inset 0 0 10px #000000;
+}
