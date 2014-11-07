@@ -42,7 +42,7 @@
     <!--</script>-->
 
 </head>
-<body ng-controller="MainCtrl">
+<body ng-controller="MainCtrl" app-background>
     <nav class="navbar navbar-default" role="navigation">
         <div class="container-fluid">
             <ul class="nav navbar-nav">
@@ -114,7 +114,7 @@
         </div>
     </section>
     <section id="main">
-        <div class="watershed">
+        <div class="watershed" ng-style="{width: data.columns*30+30,height: data.rows*20+20}">
             <div app-watershed
                class="watershed-rect"
                ng-repeat="landcover in data.baselandcover.data track by $index"

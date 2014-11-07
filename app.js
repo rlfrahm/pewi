@@ -21,8 +21,12 @@ angular.module('pewi', [])
     "Landcover_Mixed_Fruit_and_Vegetable.png"]
 )
 
-.controller('MainCtrl', ['$scope','$http','$location', 'selectedLandcover',
-  function($scope, $http, $location, selectedLandcover) {
+.constant('backgrounds', ["Background_Drought.png",
+    "Background_Normal.png",
+    "Background_Flood.png"])
+
+.controller('MainCtrl', ['$scope','$http','$location', 'selectedLandcover', 'precipitation', 'backgrounds',
+  function($scope, $http, $location, selectedLandcover, precipitation, backgrounds) {
     $http.get($location.absUrl() + 'data/data.json').success(
       function(response) {
         $scope.data = response.data;
@@ -43,6 +47,10 @@ angular.module('pewi', [])
     };
 
     $scope.modalDialogTemplate = null;
+
+    $scope.background = function() {
+      return backgrounds[precipitation.getSeed($scope.year)];
+    }
   }
 ])
 
@@ -106,4 +114,101 @@ angular.module('pewi', [])
       };
     }
   ]
+)
+
+.directive('appBackground', ['backgrounds', 'precipitation',
+  function(backgrounds, precipitation) {
+    return {
+      link: function(scope,element,attrs) {
+        var alias = attrs.alias;
+        console.log(attrs, scope);
+
+        element.css({
+          'background-image': 'url(images/backgrounds/'+backgrounds[precipitation.getSeed(scope.year)]+')'
+
+        });
+      }
+    }
+  }
+])
+
+.service('precipitation', [
+    function() {
+      var precipitation = [0,0,0,0];
+      var seed = [0,0,0,0];
+      var precip = [24.58, 28.18, 30.39, 32.16, 34.34, 36.47, 45.10];
+
+      this.setPrecipitation = function(year, value) {
+        if(!value) {
+          // Set precipitation for all years
+          var r = Math.floor(Math.random() * precip.length);
+          precipitation[year] = precip[r];
+
+          if (r === 0 || r === 1) {
+            seed[year] = 0;
+          } else if (r === 2 || r === 3 || r === 4) {
+            seed[year] = 1;
+          } else {
+            seed[year] = 2;
+          }
+        } else {
+
+        }
+      };
+
+      this.getPrecipitation = function(year) {
+        if(year) {
+          return precipitation[year];
+        } else {
+          return precipitation;
+        }
+      };
+
+      this.getSeed = function(year) {
+        if(year) {
+          return seed[year];
+        } else {
+          return seed;
+        }
+      };
+
+      for(var i=0; i<4; i++) {
+        this.setPrecipitation(i);
+      }
+    }
+  ]
 );
+
+function setPrecipitation(year, overrideValue) {
+  var precip = [24.58, 28.18, 30.39, 32.16, 34.34, 36.47, 45.10];
+  if (overrideValue) {
+    global.data.precipitation[year] = overrideValue;
+
+    if (global.data.precipitation[year] < 28.19) {
+      global.data.r[year] = 0;
+    } else if (global.data.precipitation[year] < 36.47) {
+      global.data.r[year] = 1;
+    } else {
+      global.data.r[year] = 2;
+    }
+  } else {
+    var r = Math.floor(Math.random() * precip.length);
+    global.data.precipitation[year] = precip[r];
+
+    if (r === 0 || r === 1) {
+      global.data.r[year] = 0;
+    } else if (r === 2 || r === 3 || r === 4) {
+      global.data.r[year] = 1;
+    } else {
+      global.data.r[year] = 2;
+    }
+  }
+  if(global.data[year] != 0 && global.data[year] != undefined) {
+    flagUpdateToTrue(year);
+  }
+}
+
+function getPrecipitationValue(index) {
+  var precip = [24.58, 28.18, 30.39, 32.16, 34.34, 36.47, 45.10];
+  return precip[index];
+}
