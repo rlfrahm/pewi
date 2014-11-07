@@ -1,0 +1,7 @@
+[
+  {"id":1,"src":"Icon_Topography.svg","name":"topography","label":"Topography"},
+  {"id":2,"src":"Icon_Flood_Frequency.svg","name":"flood","label":"Flood Frequency"},
+  {"id":3,"src":"Icon_Strategic_Wetlands.svg","name":"wetland","label":"Strategic Wetlands"},
+  {"id":4,"src":"Icon_Subwatershed_Boundaries.svg","name":"subwatershed","label":"Subwatershed Boundaries"},
+  {"id":5,"src":"Icon_Drainage_Class.svg","name":"drainage","label":"Drainage Class"}
+]

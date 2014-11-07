@@ -1,0 +1,17 @@
+[
+  {"id":1,"src":"Icon_Corn.png","name":"corn","label":"Corn"},
+  {"id":2,"src":"Icon_Conservation_Corn.png","name":"conservation_corn","label":"Conservation Corn"},
+  {"id":3,"src":"Icon_Soybean.png","name":"soybeans","label":"Soybeans"},
+  {"id":4,"src":"Icon_Conservation_Soybean.png","name":"conservation_soybeans","label":"Conservation Soybeans"},
+  {"id":5,"src":"Icon_Alfalfa.png","name":"alfalfa","label":"Alfalfa"},
+  {"id":15,"src":"Icon_Mixed_Fruit_and_Vegetable.png","name":"fruit_veggie","label":"Mixed Fruit & Veggies"},
+  {"id":8,"src":"Icon_Hay.png","name":"hay","label":"Hay"},
+  {"id":12,"src":"Icon_Herbaceous_Bioenergy.png","name":"herbaceous_bioenergy","label":"Herbaceous Bioenergy"},
+  {"id":6,"src":"Icon_Permanent_Pasture.png","name":"permanent_pasture","label":"Permanent Pasture"},
+  {"id":7,"src":"Icon_Rotational_Grazing.png","name":"rotational_grazing","label":"Rotational Grazing"},
+  {"id":14,"src":"Icon_Wetland.png","name":"wetlands","label":"Wetlands"},
+  {"id":9,"src":"Icon_Prairie.png","name":"prairie","label":"Prairie"},
+  {"id":11,"src":"Icon_Conventional_Forest.png","name":"conventional_forest","label":"Conventional Forest"},
+  {"id":10,"src":"Icon_Conservation_Forest.png","name":"conservation_forest","label":"Conservation Forest"},
+  {"id":13,"src":"Icon_Woody_Bioenergy.png","name":"woody_bioenergy","label":"Woody Bioenergy"}
+]

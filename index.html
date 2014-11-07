@@ -1,24 +1,29 @@
 <!doctype html>
-<html>
+<html ng-app="pewi">
 <head>
     <meta http-equiv=”X-UA-Compatible” content=”chrome=1;IE=edge”>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=0"/>
     <title>PE/WI Work Space</title>
     <meta name="description" content="A dynamic watershed.">
-    <link rel="stylesheet" href="css/style.css"/>
-    <link rel="stylesheet" href="css/broken.css"/>
-    <link rel="stylesheet" href="css/results.css"/>
-	<link rel="stylesheet" href="css/popup.css"/>
-    <script src="plugins/jquery/jquery-1.10.2.min.js"></script>
-    <script src="plugins/jquery/jquery-ui.js"></script>
-    <script src="plugins/d3/d3.v3.min.js"></script>
+    <script src="vendor/jquery/jquery-1.10.2.min.js"></script>
+
+    <link rel="stylesheet" href="vendor/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="vendor/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="app.css">
+
+    <script src="vendor/d3/d3.v3.min.js"></script>
+    <script src="vendor/angular/1.2.26/angular.min.js"></script>
+    <script src="vendor/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+    <script src="app.js"></script>
     <script src="bin/helpers.js"></script>
     <script src="bin/main.js"></script>
     <script src="bin/compatibility.js"></script>
     <script src="bin/data.js"></script>
     <script src="bin/calculations.js"></script>
     <script src="bin/puck.js"></script>
-    <script src="plugins/colorbrewer/colorbrewer.js"></script>
+    <script src="vendor/colorbrewer/colorbrewer.js"></script>
     <script src="bin/stream.js"></script>
     <script src="bin/background.js"></script>
     <script src="bin/outputmaps.js"></script>
@@ -26,231 +31,100 @@
     <script src="bin/views.js"></script>
     <script src="bin/message.js"></script>
     <script src="bin/hud.js"></script>
-    <script type="text/javascript">
-        if(document.documentMode != undefined && document.documentMode < 9) {
-            alert("Please turn off compatibility mode and refresh the browser.");
-        } else {
-            $(document).ready(function () {
-                go();
-            });
-        }
-    </script>
+    <!--<script type="text/javascript">-->
+    <!--if(document.documentMode != undefined && document.documentMode < 9) {-->
+    <!--alert("Please turn off compatibility mode and refresh the browser.");-->
+    <!--} else {-->
+    <!--$(document).ready(function () {-->
+    <!--go();-->
+    <!--});-->
+    <!--}-->
+    <!--</script>-->
 
 </head>
-<body>
-<section id="splash-screen" class="loading-layer">
-    <div>PEWI</div>
-    <br/>
-    <a><img src="images/icons/preloader.gif"></a>
-</section>
-<section id="nextyear-screen" class="loading-layer">
-    <div>Loading...</div>
-    <br/>
-    <a><img src="images/icons/preloader.gif"></a>
-</section>
-<section id="main" style="display:none">
-    <div id="popup-overlay"></div>
-    <section id="workspace">
-        <div id="divcontainer"></div>
-        <canvas id="3d-container"></canvas>
-    </section>
-    <section id="rounds" class="rounds">
-        <!--<div id="year-transition-label" class="menu-background"><a>Years</a></div>-->
-        <ul>
-            <li id="r1" title="Transition to year 1">
-                <input type="radio" id="round1" name="round" value="1"/><label
-                    for="round1" class="menu-background" id="label-year-1">1</label>
-            </li>
-            <li id="r2" title="Transition to year 2">
-                <input type="radio" id="round2" name="round" value="2"/><label
-                    for="round2" class="menu-background" id="label-year-2">2</label>
-            </li>
-            <li id="r3" title="Transition to year 3">
-                <input type="radio" id="round3" name="round" value="3"/><label
-                    for="round3" class="menu-background" id="label-year-3">3</label>
-            </li>
-        </ul>
-    </section>
-    <section id="hud">
-        <div class="hud-element" id="year-hud"><a>Year: 1</a></div>
-        <div class="hud-element" id="precipitation-hud"><a>Precipitation: Unknown</a></div>
-        <div class="hud-element" id="current-selection-hud"><a>Current Selection: None</a></div>
-        <div class="hud-element" id="hover-selection-hud"><a></a></div>
-    </section>
-    <section id="sidebar-left" class="sidebar">
-        <section id="landcover-toolbar" class="menu-background">
-            <ul id="selectable-paint" class="list-vertical">
-                <li>
-                    <div><input value="1" type="radio" id="cover1"
-                                name="landcover"/><img
-                            src="images/toolbar_icons_bitmaps/Icon_Corn.png"
-                            alt="Corn" title="Corn"></div>
-                    <div><input value="2" type="radio" id="cover2"
-                                name="landcover"/><img
-                            src="images/toolbar_icons_bitmaps/Icon_Conservation_Corn.png"
-                            alt="Conservation Corn" title="Conservation Corn">
-                    </div>
+<body ng-controller="MainCtrl">
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <ul class="nav navbar-nav">
+                <li><a href="#" ng-click="toggleSidenav()"><i class="fa fa-bars"></i></a></li>
+            </ul>
+            <div class="navbar-header">
+                <a class="navbar-brand">
+                    PE/WI <small>beta</small>
+                    <!--<img alt="Brand" src="...">-->
+                </a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href app-modal="scores">Scores</a></li>
+                <li><a href app-modal="maps">Maps</a></li>
+                <li><a href app-modal="results">Results</a></li>
+                <li class="dropdown" ng-init="setYear(1)">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Year {{year}} <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li ng-class="{disabled: yearIs(1)}"><a href ng-click="setYear(1)">Year 1</a></li>
+                        <li ng-class="{disabled: yearIs(2)}"><a href ng-click="setYear(2)">Year 2</a></li>
+                        <li ng-class="{disabled: yearIs(3)}"><a href ng-click="setYear(3)">Year 3</a></li>
+                    </ul>
                 </li>
-                <li>
-                    <div><input value="3" type="radio" id="cover3"
-                                name="landcover"/><img
-                            src="images/toolbar_icons_bitmaps/Icon_Soybean.png"
-                            alt="Soybeans" title="Soybeans"></div>
-                    <div><input value="4" type="radio" id="cover4"
-                                name="landcover"/><img
-                            src="images/toolbar_icons_bitmaps/Icon_Conservation_Soybean.png"
-                            alt="Conservation Soybeans"
-                            title="Conservation Soybeans"></div>
-                </li>
-                <li>
-                    <div><input value="5" type="radio" id="cover5"
-                                name="landcover"/><img
-                            src="images/toolbar_icons_bitmaps/Icon_Alfalfa.png"
-                            alt="Alfalfa" title="Alfalfa"></div>
-                    <div><input value="15" type="radio" id="cover15"
-                                name="landcover"/><img
-                            src="images/toolbar_icons_bitmaps/Icon_Mixed_Fruit_and_Vegetable.png"
-                            alt="Mixed Fruit & Veggies"
-                            title="Mixed Fruit & Veggies"></div>
-                </li>
-                <li>
-                    <div><input value="8" type="radio" id="cover8"
-                                name="landcover"/><img
-                            src="images/toolbar_icons_bitmaps/Icon_Hay.png"
-                            alt="Hay" title="Hay"></div>
-                    <div><input value="12" type="radio" id="cover12"
-                                name="landcover"/><img
-                            src="images/toolbar_icons_bitmaps/Icon_Herbaceous_Bioenergy.png"
-                            alt="Herbaceous Bioenergy"
-                            title="Herbaceous Bioenergy"></div>
-                </li>
-                <li>
-                    <div><input value="6" type="radio" id="cover6"
-                                name="landcover"/><img
-                            src="images/toolbar_icons_bitmaps/Icon_Permanent_Pasture.png"
-                            alt="Permanent Pasture" title="Permanent Pasture">
-                    </div>
-                    <div><input value="7" type="radio" id="cover7"
-                                name="landcover"/><img
-                            src="images/toolbar_icons_bitmaps/Icon_Rotational_Grazing.png"
-                            alt="Rotational Grazing" title="Rotational Grazing">
-                    </div>
-                </li>
-                <li>
-                    <div><input value="14" type="radio" id="cover14"
-                                name="landcover"/><img
-                            src="images/toolbar_icons_bitmaps/Icon_Wetland.png"
-                            alt="Wetlands" title="Wetlands"></div>
-                    <div><input value="9" type="radio" id="cover9"
-                                name="landcover"/><img
-                            src="images/toolbar_icons_bitmaps/Icon_Prairie.png"
-                            alt="Prairie" title="Prairie"></div>
-                </li>
-                <li>
-                    <div><input value="11" type="radio" id="cover11"
-                                name="landcover"/><img
-                            src="images/toolbar_icons_bitmaps/Icon_Conventional_Forest.png"
-                            alt="Conventional Forest"
-                            title="Conventional Forest"></div>
-                    <div><input value="10" type="radio" id="cover10"
-                                name="landcover"/><img
-                            src="images/toolbar_icons_bitmaps/Icon_Conservation_Forest.png"
-                            alt="Conservation Forest"
-                            title="Conservation Forest"></div>
-                </li>
-                <li>
-                    <div><input value="13" type="radio" id="cover13"
-                                name="landcover"/><img
-                            src="images/toolbar_icons_bitmaps/Icon_Woody_Bioenergy.png"
-                            alt="Woody Bioenergy" title="Woody Bioenergy"></div>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cog"></i></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href app-modal="download-dataset">Download Data-set</a></li>
+                        <li><a href app-modal="upload-dataset">Upload Data-set</a></li>
+                        <li class="divider"></li>
+                        <li><a href app-modal="about">About</a></li>
+                    </ul>
                 </li>
             </ul>
-        </section>
-        <section id="pfeature-toolbar" class="menu-background">
-            <ul class="list-vertical">
-                <li>
-                    <div><img src="images/icons/navigation/Icon_Topography.svg" id="topo" class="selectable-pfeature" title="Topographic Relief"></div>
-                </li>
-                <li>
-                    <div><img src="images/icons/navigation/Icon_Flood_Frequency.svg" id="flood" class="selectable-pfeature" title="Flood Frequency"></div>
-                </li>
-                <li>
-                    <div><img src="images/icons/navigation/Icon_Strategic_Wetlands.svg" id="wetland" class="selectable-pfeature" title="Strategic Wetlands"></div>
-                </li>
-                <li>
-                    <div><img src="images/icons/navigation/Icon_Subwatershed_Boundaries.svg" id="sub" class="selectable-pfeature" title="Subwatershed Boundaries"></div>
-                </li>
-                <li>
-                    <div><img src="images/icons/navigation/Icon_Drainage_Class.svg" id="drainage" class="selectable-pfeature" title="Drainage Class"></div>
-                </li>
-            </ul>
-        </section>
-        <ul class="list-vertical">
-            <li class="rotated menu-background" id="landcover">
-                <div>
-                    <div><a>Land&nbsp;Covers</a></div>
-                    <!--<img src="images/icons/white-l.png" alt="" title="" width="10px">-->
-                </div>
+        </div>
+    </nav>
+    <section id="sidenav" ng-class="{locked: sidenav}">
+        <ul class="nav nav-tabs" role="tablist" ng-init="sidenavtab=1">
+            <li role="presentation" ng-class="{active: sidenavtab==1}">
+                <a href="#" data-toggle="tooltip" data-placement="bottom" title="Land Covers" ng-click="sidenavtab=1">
+                    <i class="fa fa-tree"></i>
+                </a>
             </li>
-            <li class="rotated menu-background" id="layer">
-                <div>
-                    <div><a>Physical&nbsp;Features</a></div>
-                    <!--<img src="images/icons/white-l.png" alt="" title="" width="10px">-->
-                </div>
-            </li>
-			<li class="rotated menu-background" id="square-paint">
-                <div>
-					
-                </div>
-			</li>
-        </ul>
-    </section>
-    <section id="sidebar-right" class="sidebar">
-        <ul class="list-vertical">
-            <li id="score-tab" class="rotated menu-background">
-                <!--<article id="improve-selection-helper" class="helper-box">Spatially displayed<br />output maps</article>-->
-                <div>
-                    <div><a id="score">Scores</a></div>
-                </div>
-            </li>
-            <li id="outputmap-tab" class="rotated menu-background">
-                <!--<article id="improve-selection-helper" class="helper-box">Spatially displayed<br />output maps</article>-->
-                <div>
-                    <div><a id="improve">Maps</a></div>
-                </div>
-            </li>
-            <li id="results-tab" class="rotated menu-background">
-                <!--<article id="improve-selection-helper" class="helper-box">Spatially displayed<br />output maps</article>-->
-                <div>
-                    <div><a id="facts">Results</a></div>
-                </div>
+            <li role="presentation" ng-class="{active: sidenavtab==2}">
+                <a href="#" data-toggle="tooltip" data-placement="bottom" title="Physical Features" ng-click="sidenavtab=2">
+                    <i class="fa fa-tachometer"></i>
+                </a>
             </li>
         </ul>
+        <div ng-show="sidenavtab==1" ng-controller="LandCoverSelectCtrl">
+            <div class="list-group">
+                <a href class="list-group-item"
+                   ng-class="{active: landcoverIsSelected(landcover.id)}"
+                   ng-repeat="landcover in landcovers"
+                   ng-click="setSelectedLandcover(landcover.id)">
+                    <img src="images/toolbar_icons_bitmaps/{{landcover.src}}" height="30" width="auto">
+                    <small>{{landcover.label}}</small>
+                </a>
+            </div>
+        </div>
+        <div ng-show="sidenavtab==2" ng-controller="FeaturesSelectCtrl">
+            <div class="list-group">
+                <a href class="list-group-item"
+                   ng-repeat="feature in features"
+                   ng-click="showFeature(feature.id)">
+                    <img src="images/icons/navigation/{{feature.src}}" height="30" width="auto">
+                    <small>{{feature.label}}</small>
+                </a>
+            </div>
+        </div>
     </section>
-</section>
-<section id="rclick-puk-container"></section>
-<section id="movement-controls" class="menu-background">
-    <ul class="list-vertical">
-        <li>
-            <div id="zoom-fit"><img src="images/icons/panel_resize_actual.png"
-                                    alt="fit"></div>
-        </li>
-        <li>
-            <div id="zoom-in"><img src="images/icons/zoomIn.png" alt="in"></div>
-        </li>
-        <li>
-            <div id="zoom-out"><img src="images/icons/zoomOut.png" alt="out">
+    <section id="main">
+        <div class="watershed">
+            <div app-watershed-rect class="watershed-rect" ng-repeat="landcover in data.baselandcover.data track by $index" ng-if="landcover != -1" style="left: {{data.column.data[$index] * 30}}px;top: {{data.row.data[$index] * 20}}px">
+                <a href>
+                    <img src="images/cell_images_bitmaps/{{cellImgs[landcover]}}" height="20" width="30">
+                </a>
             </div>
-        </li>
-        <li>
-            <div id="pan"><img src="images/icons/move.png" alt="pan"></div>
-        </li>
-        <li>
-            <div id="select"><img src="images/icons/select.png" alt="select">
-            </div>
-        </li>
-    </ul>
-</section>
-</section>
+        </div>
+    </section>
+    <!-- Modal -->
+    <div ng-if="modalDialogTemplate" class="modal fade" id="modalDialog" tabindex="-1" role="dialog" aria-labelledby="modalDialog" aria-hidden="true">
+        <div ng-include="modalDialogTemplate"></div>
+    </div>
 </body>
 </html>
