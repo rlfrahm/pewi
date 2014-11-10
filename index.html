@@ -120,7 +120,8 @@
                ng-repeat="landcover in data.baselandcover.data track by $index"
                ng-if="landcover != -1"
                style="left: {{data.column.data[$index] * 30}}px;top: {{data.row.data[$index] * 20}}px"
-               ng-click="setLandcover($index, selectedLandcover)">
+               ng-click="setLandcover($index, selectedLandcover)"
+               ng-mousedown="MouseEntered()">
                 <img src="images/cell_images_bitmaps/{{src}}" height="20" width="30">
             </div>
         </div>

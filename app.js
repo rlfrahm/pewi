@@ -100,6 +100,17 @@ angular.module('pewi', [])
             console.log(landcover);
             scope.src = (typeof cellImgs[scope.landcover] == 'object') ? cellImgs[scope.landcover][Math.floor(Math.random() * 2)] : cellImgs[scope.landcover];
           };
+          scope.mousedown = false;
+          scope.mouseover = false;
+          scope.MouseEntered = function(e) {
+            // console.log(e);
+          };
+          element.on('mouseenter', function(e) {
+            console.log(e);
+          });
+          element.on('dragstart', function(e) {
+            e.preventDefault();
+          });
         }
       }
     }
